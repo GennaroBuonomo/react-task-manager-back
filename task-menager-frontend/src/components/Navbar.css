@@ -1,0 +1,19 @@
+.main-nav {
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: black;
+  font-weight: normal;
+}
+
+.nav-link.active {
+  font-weight: bold;
+  color: blue;
+  text-decoration: underline;
+}
