@@ -36,3 +36,39 @@
   font-size: 1.1rem;
   color: #666;
 }
+
+.task-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-top: 20px;
+}
+
+.task-table th, 
+.task-table td {
+  border: 1px solid black;
+  padding: 12px;
+  text-align: left;
+  color: black;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.todo {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.doing {
+  background-color: #ffd11a;
+  color: black;
+}
+
+.done {
+  background-color: #2eb82e;
+  color: white;
+}
