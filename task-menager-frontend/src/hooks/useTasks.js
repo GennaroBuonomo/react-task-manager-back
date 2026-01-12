@@ -41,8 +41,26 @@ export const useTasks = () => {
     }
   };
 
- 
-  const removeTask = async (id) => console.log("Rimuovo:", id);
+  const removeTask = async (id) => {
+    try{
+      const response = await fetch(`${apiUrl}/tasks/${id}`, {
+        method: "DELETE" 
+      });
+
+      const data = await response.json()
+
+      if(data.success) {
+        setTasks((prevTasks) => prevTasks.filter((task) => String(task.id) !== String(id)))
+        return data;
+      }else{
+        throw new Error(data.message || "Errore durante l' eliminazione")
+      }
+    }catch (error){
+      console.error("Errore removeTask", error);
+      throw error;
+    }
+  }
+  
   const updateTask = async (id, data) => console.log("Aggiorno:", id);
 
   return { 
