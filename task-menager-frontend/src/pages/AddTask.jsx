@@ -1,21 +1,20 @@
 import { useState } from "react";
+import { useGlobalContext } from "../contexts/GlobalContext";
 import "./AddTask.css";
 
-function AddTask() {
+export default function AddTask() {
+  const { addTask } = useGlobalContext();
   const [error, setError] = useState("");
   const symbols = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
     
-    // unisco tutti i dati dal form in una riga sola
-    const data = new FormData(e.target);
-    
-    //Trasformo i dati in un oggetto facile da usare
     const taskTitle = data.get("title");
-    const taskDescription = data.get("description");
-    const taskStatus = data.get("status");
 
+    // Validazione
     if (!taskTitle.trim()) {
       setError("Il titolo è obbligatorio");
       return;
@@ -23,33 +22,40 @@ function AddTask() {
 
     const hasSymbols = taskTitle.split("").some((char) => symbols.includes(char));
     if (hasSymbols) {
-      setError("Niente simboli speciali!");
+      setError("Non puoi usare simboli speciali nel titolo");
       return;
     }
 
-    setError("");
-
-    //Creo l'oggetto finale richiesto dalla Milestone
     const newTask = {
       title: taskTitle,
-      description: taskDescription,
-      status: taskStatus,
-      createdAt: new Date().toISOString()
+      description: data.get("description"),
+      status: data.get("status"),
     };
 
-    console.log("Task creato con FormData:", newTask);
+    try {
+      // Chiamata all'API tramite l'hook
+      await addTask(newTask);
+      
+      alert("Task creato con successo!");
+      form.reset(); // Svuota il form
+      setError(""); // Pulisce l'errore
+    } catch (err) {
+      alert(`Errore: ${err.message}`);
+    }
   };
 
   return (
     <div className="main-content">
-      <h1>Nuovo Task (Modo Rapido)</h1>
+      <h1>Aggiungi Nuovo Task</h1>
       <form onSubmit={handleSubmit} className="task-form">
-        
-        <input name="title" placeholder="Titolo" />
+        <label>Titolo del Task</label>
+        <input name="title" placeholder="Cosa devi fare?" />
         {error && <p className="error-message">{error}</p>}
 
-        <textarea name="description" placeholder="Descrizione" />
+        <label>Descrizione</label>
+        <textarea name="description" placeholder="Aggiungi dettagli..." />
 
+        <label>Stato iniziale</label>
         <select name="status" defaultValue="To do">
           <option value="To do">To do</option>
           <option value="Doing">Doing</option>
@@ -61,5 +67,3 @@ function AddTask() {
     </div>
   );
 }
-
-export default AddTask

@@ -11,7 +11,7 @@ export const useTasks = () => {
       const data = await response.json();
       setTasks(data);
     } catch (error) {
-      console.error("Errore:", error);
+      console.error("Errore nel caricamento:", error);
     } finally {
       setLoading(false);
     }
@@ -21,9 +21,36 @@ export const useTasks = () => {
     fetchTasks();
   }, []);
 
-  const addTask = async (newTask) => console.log("Aggiungo:", newTask);
+ 
+  const addTask = async (newTaskData) => {
+    const response = await fetch(`${apiUrl}/tasks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newTaskData),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+   
+      setTasks([...tasks, data.task]); 
+      return data;
+    } else {
+      // Se il server risponde con un errore
+      throw new Error(data.message || "Errore nel salvataggio");
+    }
+  };
+
+ 
   const removeTask = async (id) => console.log("Rimuovo:", id);
   const updateTask = async (id, data) => console.log("Aggiorno:", id);
 
-  return { tasks, loading, addTask, removeTask, updateTask, refreshTasks: fetchTasks };
+  return { 
+    tasks, 
+    loading, 
+    addTask, 
+    removeTask, 
+    updateTask, 
+    refreshTasks: fetchTasks 
+  };
 };
