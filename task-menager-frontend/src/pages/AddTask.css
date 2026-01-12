@@ -1,0 +1,91 @@
+/* Container principale per centrare il form */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background-color: #f0f2f5; /* Grigio chiarissimo per far risaltare il form */
+  min-height: 80vh;
+}
+
+h1 {
+  color: #1a1a1a;
+  margin-bottom: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Stile della card del Form */
+.task-form {
+  background: #ffffff;
+  width: 100%;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); 
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+/* Stile comune per Input, Textarea e Select */
+.task-form input, 
+.task-form textarea, 
+.task-form select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1.5px solid #e1e1e1;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease; 
+  outline: none;
+  background-color: #fafafa;
+  color: #1a1a1a;
+}
+
+/* Effetto al click (focus) */
+.task-form input:focus, 
+.task-form textarea:focus, 
+.task-form select:focus {
+  border-color: #007bff;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
+/* Textarea un po' più alta */
+.task-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Messaggio di errore */
+.error-message {
+  color: #d93025;
+  background-color: #feefef;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin: -10px 0 0 0;
+  border-left: 4px solid #d93025;
+}
+
+/* Bottone moderno */
+.task-form button {
+  background-color: #007bff;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.task-form button:hover {
+  background-color: #0056b3;
+}
+
+.task-form button:active {
+  transform: scale(0.98);
+}
