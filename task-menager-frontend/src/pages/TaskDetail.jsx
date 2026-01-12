@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../contexts/GlobalContext";
 import Modal from "../components/Modal";
+import EditTaskModal from "../components/editTaskModal";
 import "./TaskDetail.css";
 
 function TaskDetail() {
@@ -11,6 +12,7 @@ function TaskDetail() {
 
 
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const task = tasks.find((t) => String(t.id) === String(id));
 
@@ -30,6 +32,16 @@ function TaskDetail() {
       setShowModal(false);
       alert("Task eliminata con successo!");
       navigate("/"); 
+    } catch (err) {
+      alert(`Errore: ${err.message}`);
+    }
+  };
+
+  const handleUpdate = async (updatedData) => {
+    try {
+      await updateTask(updatedData);
+      setShowEditModal(false);
+      alert("Task aggiornata correttamente!");
     } catch (err) {
       alert(`Errore: ${err.message}`);
     }
@@ -62,6 +74,13 @@ function TaskDetail() {
         onClose={() => setShowModal(false)} 
         onConfirm={confirmDelete}
         confirmText="Sì, elimina"
+      />
+
+      <EditTaskModal 
+        show={showEditModal}
+        task={task}
+        onClose={() => setShowEditModal(false)}
+        onSave={handleUpdate}
       />
     </div>
   );

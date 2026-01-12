@@ -60,8 +60,33 @@ export const useTasks = () => {
       throw error;
     }
   }
+
+  const updateTask = async (updatedTask) => {
+  try {
+    const response = await fetch(`${apiUrl}/tasks/${updatedTask.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTask),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setTasks((prevTasks) =>
+        prevTasks.map((t) => (t.id === data.task.id ? data.task : t))
+      );
+      return data;
+    } else {
+      throw new Error(data.message || "Errore durante l'aggiornamento");
+    }
+  } catch (error) {
+    console.error("Errore updateTask:", error);
+    throw error;
+  }
+};
+
+
   
-  const updateTask = async (id, data) => console.log("Aggiorno:", id);
 
   return { 
     tasks, 
