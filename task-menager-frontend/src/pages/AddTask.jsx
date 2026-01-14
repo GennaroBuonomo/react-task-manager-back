@@ -16,7 +16,7 @@ export default function AddTask() {
 
     // Validazione
     if (!taskTitle.trim()) {
-      setError("Il titolo è obbligatorio");
+      setError("Il titolo è obbligatorio!");
       return;
     }
 
