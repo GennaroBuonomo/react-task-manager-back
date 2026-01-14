@@ -1,66 +1,95 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useGlobalContext } from "../contexts/GlobalContext";
 import TaskRow from "../components/TaskRow";
+import debounce from "lodash.debounce";
 import './TaskList.css';
 
 function TaskList() {
   const { tasks, loading } = useGlobalContext();
 
+  // Stati per l'ordinamento (Milestone 11)
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState(1);
 
- //  Mappa per definire l'ordine degli stati
-  const statusOrder = { "Todo": 1, "Doing": 2, "Done": 3 }
+  // Stato per la ricerca (Milestone 12)
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Logica di ordinamento con useMemo
-  const sortedTasks = useMemo(() => {
-    // Creo una copia per non modificare l'array originale
-    return [...tasks].sort((a, b) => {
+  // Mappa per definire l'ordine degli stati
+  const statusOrder = { "Todo": 1, "Doing": 2, "Done": 3 };
+
+  // 1. Configurazione del Debounce (Milestone 12)
+  // Aspetta 300ms dopo che l'utente smette di scrivere prima di filtrare
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setSearchQuery(value);
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = (e) => {
+    debouncedSearch(e.target.value);
+  };
+
+  // 2. Logica combinata: FILTRO + ORDINAMENTO (Milestone 11 e 12)
+  const filteredAndSortedTasks = useMemo(() => {
+    // FASE A: Filtraggio basato sulla ricerca
+    const filtered = tasks.filter((task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // FASE B: Ordinamento dei risultati filtrati
+    return [...filtered].sort((a, b) => {
       let result = 0;
-
       if (sortBy === "title") {
         result = a.title.localeCompare(b.title);
-      } else if (sortBy === "status"){
+      } else if (sortBy === "status") {
         result = statusOrder[a.status] - statusOrder[b.status];
-      }else if (sortBy === "createdAt") {
-       result = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else if (sortBy === "createdAt") {
+        result = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
       }
-
-       return  result * sortOrder;
+      return result * sortOrder;
     });
-  }, [tasks, sortBy, sortOrder]);
+  }, [tasks, sortBy, sortOrder, searchQuery]); // Si ricarica se cambia uno di questi
 
-  // Funzione per gestire il click sulle intestazioni (th)
+  // Funzione per gestire il click sulle intestazioni
   const handleSort = (column) => {
     if (sortBy === column) {
-      setSortOrder(sortOrder * -1);  // Inverte l'ordine
+      setSortOrder(sortOrder * -1); // Inverte l'ordine
     } else {
       setSortBy(column);
-      setSortOrder(1);  // Reset a crescente per nuova colonna
+      setSortOrder(1); // Reset a crescente
     }
-  }
+  };
 
- if (loading) {
+  if (loading) {
     return <div className="main-content">Caricamento task in corso...</div>;
   }
 
-   // Funzione per mostrare la freccina
   const getSortIcon = (column) => {
     if (sortBy !== column) return "";
     return sortOrder === 1 ? " ▲" : " ▼";
   };
 
   return (
-   <div className="main-content">
-         <h1>Elenco dei Task</h1>
-      
-         {tasks.length === 0 ? (
-           <p>Ottimo lavoro! Non ci sono task nella lista.</p>
-         ) : (
-          <table className="task-table">
-            <thead>
-              <tr>
-              {/* Usiamo className dinamico per lo stile CSS */}
+    <div className="main-content">
+      <h1>Elenco dei Task</h1>
+
+      {/* Barra di ricerca (Milestone 12) */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Cerca un task per nome..."
+          onChange={handleSearchChange}
+          className="search-input"
+        />
+      </div>
+
+      {tasks.length === 0 ? (
+        <p>Ottimo lavoro! Non ci sono task nella lista.</p>
+      ) : (
+        <table className="task-table">
+          <thead>
+            <tr>
               <th 
                 onClick={() => handleSort("title")} 
                 className={sortBy === "title" ? "active-sort" : ""}
@@ -81,17 +110,22 @@ function TaskList() {
               </th>
               <th>Azioni</th>
             </tr>
-            </thead>
-            <tbody>
-              {sortedTasks.map((task) => (
-                <TaskRow key={task.id} task={task} />
-              ))}
-            </tbody>
-          </table>
-         )}
-      </div>
+          </thead>
+          <tbody>
+            {/* Usiamo l'array filtrato e ordinato */}
+            {filteredAndSortedTasks.map((task) => (
+              <TaskRow key={task.id} task={task} />
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* Messaggio se la ricerca non trova nulla */}
+      {filteredAndSortedTasks.length === 0 && tasks.length > 0 && (
+        <p className="no-results">Nessun task trovato per "{searchQuery}"</p>
+      )}
+    </div>
   );
 }
-
 
 export default TaskList;
