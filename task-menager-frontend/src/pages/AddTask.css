@@ -1,105 +1,42 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 20px;
-  background-color: #f0f4f8; /* Grigio-azzurro chiarissimo */
-  min-height: 100vh;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-.main-content h1 {
-  color: #1a202c;
-  margin-bottom: 30px;
-  font-weight: 600;
-}
-
-/* 3. CARD DEL FORM */
 .task-form {
-  background: #ffffff;
-  width: 120%;
-  max-width: 420px; /* Larghezza ideale per un form pulito */
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Ombra leggerissima */
-  display: flex;
-  flex-direction: column;
+  background: white;
+  padding: 40px;
+  border-radius: 35px;
+  border: 2px solid #e0e0e0;
 }
 
-/* 4. ETICHETTE (LABEL) */
 .task-form label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #4a5568;
-  margin-bottom: 8px;
-  margin-top: 15px;
+  font-size: 16px;
+  color: #2d3436;
+  padding-left: 10px;
 }
 
-.task-form label:first-of-type {
-  margin-top: 0;
-}
-
-/* 5. CAMPI DI INPUT (Input, Textarea, Select) */
 .task-form input, 
 .task-form textarea, 
 .task-form select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 16px;
-  background-color: #f8fafc;
-  color: #2d3748;
-  outline: none;
-  transition: all 0.2s;
+  border: 3px solid #f1f3f5;
+  border-radius: 20px;
+  padding: 15px;
+  font-size: 18px;
+  background: #f8f9fa;
 }
 
-/* Quando clicchi sul campo */
-.task-form input:focus, 
-.task-form textarea:focus, 
-.task-form select:focus {
-  border-color: #3182ce;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+.task-form input:focus {
+  border-color: #4ecdc4;
+  background: white;
 }
 
-.task-form textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-/* 6. MESSAGGIO DI ERRORE */
-.error-message {
-  color: #e53e3e;
-  font-size: 13px;
-  margin-top: 5px;
-  font-weight: 500;
-}
-
-/* 7. BOTTONE */
 .task-form button {
-  margin-top: 25px;
-  padding: 14px;
-  background-color: #3182ce; /* Un bel blu solido */
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.task-form button:hover {
-  background-color: #2b6cb0; /* Blu un po' più scuro al passaggio */
+  background: #ff6b6b;
+  border-radius: 20px;
+  font-size: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 0 #ee5253; 
+  transition: all 0.1s;
+  margin-left: 19px;
 }
 
 .task-form button:active {
-  transform: scale(0.98); /* Effetto clic */
+  transform: translateY(4px);
+  box-shadow: 0 5px 0 #ee5253;
 }
