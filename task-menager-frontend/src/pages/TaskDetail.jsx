@@ -2,14 +2,13 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../contexts/GlobalContext";
 import Modal from "../components/Modal";
-import EditTaskModal from "../components/editTaskModal";
+import EditTaskModal from "../components/EditTaskModal";
 import "./TaskDetail.css";
 
 function TaskDetail() {
   const { id } = useParams();
-  const { tasks, removeTask } = useGlobalContext();
+  const { tasks, removeTask, updateTask } = useGlobalContext();
   const navigate = useNavigate();
-
 
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -25,13 +24,12 @@ function TaskDetail() {
     );
   }
 
- 
   const confirmDelete = async () => {
     try {
       await removeTask(task.id);
       setShowModal(false);
       alert("Task eliminata con successo!");
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       alert(`Errore: ${err.message}`);
     }
@@ -60,28 +58,38 @@ function TaskDetail() {
           <p><strong>Creato il:</strong> {new Date(task.createdAt).toLocaleString()}</p>
         </div>
 
-        {/* Cliccando qui NON eliminiamo subito, ma apriamo la modale */}
-        <button onClick={() => setShowModal(true)} className="delete-btn-detail">
-          Elimina task
-        </button>
+        <div className="task-actions">
+          {/* BOTTONE PER MODIFICARE */}
+          <button onClick={() => setShowEditModal(true)} className="edit-btn">
+            Modifica task
+          </button>
+
+          {/* BOTTONE PER ELIMINARE */}
+          <button onClick={() => setShowModal(true)} className="delete-btn-detail">
+            Elimina task
+          </button>
+        </div>
       </div>
 
-    
+      {/* MODALE ELIMINAZIONE */}
       <Modal 
         show={showModal} 
         title="Conferma eliminazione" 
-        content={`Sei sicuro di voler eliminare il task "${task.title}"? L'azione è irreversibile.`}
+        content={`Sei sicuro di voler eliminare il task "${task.title}"?`}
         onClose={() => setShowModal(false)} 
         onConfirm={confirmDelete}
         confirmText="Sì, elimina"
       />
 
-      <EditTaskModal 
-        show={showEditModal}
-        task={task}
-        onClose={() => setShowEditModal(false)}
-        onSave={handleUpdate}
-      />
+      {/* MODALE MODIFICA */}
+      {showEditModal && (
+        <EditTaskModal 
+          show={showEditModal}
+          task={task}
+          onClose={() => setShowEditModal(false)}
+          onSave={handleUpdate}
+        />
+      )}
     </div>
   );
 }
