@@ -1,32 +1,27 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react"; // Rimosso useCallback se non usato altrove
 import { useGlobalContext } from "../contexts/GlobalContext";
 import TaskRow from "../components/TaskRow";
 import debounce from "lodash.debounce";
 import './TaskList.css';
 
+
+const statusOrder = { "To do": 1, "Doing": 2, "Done": 3 };
+
 function TaskList() {
   const { tasks, loading } = useGlobalContext();
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState(1);
-
-  
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mappa per definire l'ordine degli stati
-  const statusOrder = { "To do": 1, "Doing": 2, "Done": 3 };
 
-  
-const debouncedSearch = useCallback(
-  debounce((value) => {
-    setSearchQuery(value);
-  }, 300),
-  []
-);
+  const debouncedSearch = useMemo(
+    () => debounce((value) => setSearchQuery(value), 300),
+    []
+  );
 
   const handleSearchChange = (e) => {
     debouncedSearch(e.target.value);
   };
-
 
   const filteredAndSortedTasks = useMemo(() => {
     const filtered = tasks.filter((task) =>
@@ -38,21 +33,20 @@ const debouncedSearch = useCallback(
       if (sortBy === "title") {
         result = a.title.localeCompare(b.title);
       } else if (sortBy === "status") {
-        result = statusOrder[a.status] - statusOrder[b.status];
+        result = (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
       } else if (sortBy === "createdAt") {
         result = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
       }
       return result * sortOrder;
     });
-  }, [tasks, sortBy, sortOrder, searchQuery]); // Si ricarica se cambia uno di questi
+  }, [tasks, sortBy, sortOrder, searchQuery]);
 
-  // Funzione per gestire il click sulle intestazioni
   const handleSort = (column) => {
     if (sortBy === column) {
-      setSortOrder(sortOrder * -1); // Inverte l'ordine
+      setSortOrder(sortOrder * -1);
     } else {
       setSortBy(column);
-      setSortOrder(1); // Reset a crescente
+      setSortOrder(1);
     }
   };
 
@@ -84,22 +78,13 @@ const debouncedSearch = useCallback(
         <table className="task-table">
           <thead>
             <tr>
-              <th 
-                onClick={() => handleSort("title")} 
-                className={sortBy === "title" ? "active-sort" : ""}
-              >
+              <th onClick={() => handleSort("title")} className={sortBy === "title" ? "active-sort" : ""}>
                 Nome {getSortIcon("title")}
               </th>
-              <th 
-                onClick={() => handleSort("status")} 
-                className={sortBy === "status" ? "active-sort" : ""}
-              >
+              <th onClick={() => handleSort("status")} className={sortBy === "status" ? "active-sort" : ""}>
                 Stato {getSortIcon("status")}
               </th>
-              <th 
-                onClick={() => handleSort("createdAt")} 
-                className={sortBy === "createdAt" ? "active-sort" : ""}
-              >
+              <th onClick={() => handleSort("createdAt")} className={sortBy === "createdAt" ? "active-sort" : ""}>
                 Data {getSortIcon("createdAt")}
               </th>
               <th>Azioni</th>
