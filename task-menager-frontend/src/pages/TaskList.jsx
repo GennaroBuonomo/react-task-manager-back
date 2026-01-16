@@ -87,7 +87,6 @@ function TaskList() {
               <th onClick={() => handleSort("createdAt")} className={sortBy === "createdAt" ? "active-sort" : ""}>
                 Data {getSortIcon("createdAt")}
               </th>
-              <th>Azioni</th>
             </tr>
           </thead>
           <tbody>

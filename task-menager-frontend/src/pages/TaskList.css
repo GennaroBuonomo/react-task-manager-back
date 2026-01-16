@@ -15,6 +15,30 @@
   border: none;
 }
 
+.task-table th {
+  cursor: pointer;
+  user-select: none;
+  padding: 10px 20px;
+  text-align: left;
+  color: #718096;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+.task-table th:hover {
+  color: #3182ce; 
+}
+
+
+.task-table th::after {
+  content: ""; 
+  display: inline-block;
+  width: 15px;
+}
+
 .task-table td:first-child { border-radius: 20px 0 0 20px; }
 .task-table td:last-child { border-radius: 0 20px 20px 0; }
 
