@@ -6,38 +6,33 @@ import './TaskList.css';
 
 function TaskList() {
   const { tasks, loading } = useGlobalContext();
-
-  // Stati per l'ordinamento (Milestone 11)
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState(1);
 
-  // Stato per la ricerca (Milestone 12)
+  
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mappa per definire l'ordine degli stati
-  const statusOrder = { "Todo": 1, "Doing": 2, "Done": 3 };
+  const statusOrder = { "To do": 1, "Doing": 2, "Done": 3 };
 
-  // 1. Configurazione del Debounce (Milestone 12)
-  // Aspetta 300ms dopo che l'utente smette di scrivere prima di filtrare
-  const debouncedSearch = useCallback(
-    debounce((value) => {
-      setSearchQuery(value);
-    }, 300),
-    []
-  );
+  
+const debouncedSearch = useCallback(
+  debounce((value) => {
+    setSearchQuery(value);
+  }, 300),
+  []
+);
 
   const handleSearchChange = (e) => {
     debouncedSearch(e.target.value);
   };
 
-  // 2. Logica combinata: FILTRO + ORDINAMENTO (Milestone 11 e 12)
+
   const filteredAndSortedTasks = useMemo(() => {
-    // FASE A: Filtraggio basato sulla ricerca
     const filtered = tasks.filter((task) =>
       task.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // FASE B: Ordinamento dei risultati filtrati
     return [...filtered].sort((a, b) => {
       let result = 0;
       if (sortBy === "title") {
@@ -74,7 +69,6 @@ function TaskList() {
     <div className="main-content">
       <h1>Elenco dei Task</h1>
 
-      {/* Barra di ricerca (Milestone 12) */}
       <div className="search-container">
         <input
           type="text"
@@ -112,7 +106,6 @@ function TaskList() {
             </tr>
           </thead>
           <tbody>
-            {/* Usiamo l'array filtrato e ordinato */}
             {filteredAndSortedTasks.map((task) => (
               <TaskRow key={task.id} task={task} />
             ))}
@@ -120,7 +113,6 @@ function TaskList() {
         </table>
       )}
 
-      {/* Messaggio se la ricerca non trova nulla */}
       {filteredAndSortedTasks.length === 0 && tasks.length > 0 && (
         <p className="no-results">Nessun task trovato per "{searchQuery}"</p>
       )}
